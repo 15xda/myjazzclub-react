@@ -1,32 +1,24 @@
-import React from 'react'
-import YouTube from 'react-youtube';
 
-const YouTubePlayer = () => {
 
-    const playerOptions = {
-        height: '400',
-        width: '400',
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          playsinline: 1,
-        },
-    };
 
-    const onStateChange = (e) => {
-        switch (e.data) {
-            case YT.PlayerState:
-                console.log(YT.PlayerState)
-        }
-    }
+const YouTubePlayer = ({stationId}) => {
+
+  
+
 
   return (
     <div>
-        <YouTube 
-            videoId='hVFaaUEIpzE'
+        <YouTube
+            videoId={playerVideoId}
             opts={playerOptions}
-            onStateChange={onStateChange}
+            onStateChange={onPStateChange}
+            onReady={onPReady}
         />
+      <button className='bg-white p-5 m-5 rounded-xl cursor-pointer' onClick={handlePlayPauseStream}>{playerState === 1 ? 'Pause' : 'Play'}</button>
+      <button className='bg-white p-5 m-5 rounded-xl cursor-pointer' onClick={handlePreviousStation}>Prev</button>
+      <button className='bg-white p-5 m-5 rounded-xl cursor-pointer' onClick={handleNextStation}>Next</button>
+      <button className='bg-white p-5 m-5 rounded-xl cursor-pointer' onClick={handleRandomStation}>Random</button>
+      <input type="range" onChange={handleVolumeChange} value={playerVolume} id="volumeInput" />
     </div>
   )
 }
