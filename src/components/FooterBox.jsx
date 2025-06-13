@@ -1,10 +1,10 @@
 import React from 'react'
-import AudioPlayer from './AudioPlayer'
+import Instance from './Instance'
 
 const FooterBox = () => {
   return (
-    <div className='fixed bottom-0 flex items-center justify-center w-full bg-red-900' >
-        <AudioPlayer/>
+    <div id='footerBox' className='fixed bottom-0 flex px-10 w-full ' >
+        <Instance />
     </div>
   )
 }

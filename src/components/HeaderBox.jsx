@@ -6,9 +6,14 @@ import {
   faWandMagicSparkles,
   faCompass
  } from '@fortawesome/free-solid-svg-icons';
+import { useRecoilState } from 'recoil';
+import { backgroundState } from '../recoil/atoms';
+import { getRandomBkg } from '../utils/backgroundControls';
+import InteractionButton from './InteractionButton';
 
 const HeaderBox = () => {
   const [fullscreen, setFullscreen] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useRecoilState(backgroundState);
 
   const toggleFullscreen = () => {
     if (!fullscreen) {
@@ -18,19 +23,23 @@ const HeaderBox = () => {
       document.exitFullscreen();
       setFullscreen(false)
     }
-    
   }
+
   return (
     <div className='flex flex-row items-center justify-between p-10 text-white'>
-      <div className='text-2xl font-bold'>myJazzCLub</div>
+      <div className='logo-text text-3xl'>My JazzCLub</div>
       <div>
         <ul className="flex flex-row space-x-10 font-base">
             <li>
-              <button onClick={toggleFullscreen}><FontAwesomeIcon icon={fullscreen ? faDownLeftAndUpRightToCenter : faUpRightAndDownLeftFromCenter} className='text-xl'/></button>
+              <InteractionButton onClick={toggleFullscreen} src={fullscreen ? 'public/icons/collapse.svg' : 'public/icons/expand.svg'}/>
             </li>
-
-            <li><FontAwesomeIcon icon={faWandMagicSparkles} className='text-xl'/></li>
-            <li><FontAwesomeIcon icon={faCompass} className='text-xl'/></li>
+            <li>
+              <InteractionButton onClick={() => setBackgroundImage(getRandomBkg())}
+                src={'public/icons/image.svg'}/>
+            </li>
+            <li>
+              <InteractionButton src={'public/icons/heart.svg'}/>
+            </li>
         </ul>
       </div>
     </div>

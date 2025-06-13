@@ -1,13 +1,12 @@
-export default function getReadableStatus(status) {
-    if (status === -1) {
-        return 'Unknown';
-    } else if (status === 0) {
-        return 'Ended';
-    } else if (status === 1) {
-        return 'Playing'
-    } else if (status === 2) {
-        return 'Paused'
-    } else if (status === 3) {
-        return 'Buffering ...'
-    }
-} 
+    export default function getReadableStatus(status) {
+        
+        const statusMap = {
+            [-1]: 'Unknown',
+            [0]: 'Ended',
+            [1]: 'Playing', 
+            [2]: 'Paused', 
+            [3]: 'Buffering ...',
+        }
+
+        return statusMap[status] ?? 'Thinking ...'
+    } 

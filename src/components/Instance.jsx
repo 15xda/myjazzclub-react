@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import YouTube from 'react-youtube';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { 
   faBackward, 
   faForward, 
@@ -12,17 +13,24 @@ import {
 
 import { getPlayerVolumeFromLS, savePlayerVolumeToLS } from '../utils/getPlayerVolume';
 import { getNextStationId, getPreviousStationId, getRandomStantionId} from '../utils/playerControles';
+import { getNextBkg, getPreviousBkg, getRandomBkg } from '../utils/backgroundControls';
+import { backgroundState } from '../recoil/atoms';
 import getReadableStatus from '../utils/getReadableStatus';
+import checkVideoAvailability from '../utils/checkStreamAvailability';
+import InteractionButton from './InteractionButton';
 
-const AudioPlayer = () => {
+const Instance = () => {
   const playerRef = useRef();
+
   const [playerIsInitialized, setPlayerIsInitialized] = useState(false);
-  const [playerVolume, setPlayerVolume] = useState(getPlayerVolumeFromLS());
-  const [playerVideoId, setPlayerVideoId] = useState(getRandomStantionId());
+  const [playerVolume, setPlayerVolume] = useState(() => getPlayerVolumeFromLS());
+  const [playerVideoId, setPlayerVideoId] = useState(() => getRandomStantionId());
   const [playerState, setPlayerState] = useState(-1);
-
   const [videoMetaData, setVideoMetaData] = useState();
-
+  const [backgroundImage, setBackgroundImage] = useRecoilState(backgroundState);
+  const [lastFunc, setLastFunc] = useState(null);
+  const [unavailablityText, setUnavailabilityText] = useState(null);
+  
   const playerOptions = {
       height: '0',
       width: '0',
@@ -44,8 +52,6 @@ const AudioPlayer = () => {
     playerRef.current.setVolume(playerVolume);
     setVideoMetaData(playerRef.current.getVideoData());
   }
-
-  console.log(videoMetaData)
   
 
   const handlePreviousStation = () => {
@@ -53,8 +59,12 @@ const AudioPlayer = () => {
       const prevId = getPreviousStationId(playerVideoId);
       playerRef.current.loadVideoById(prevId);
       setPlayerVideoId(prevId);
+      setBackgroundImage(getPreviousBkg(backgroundImage));
+      setLastFunc('prev');
     }
   }
+
+  
 
   const handleNextStation = () => {
 
@@ -62,28 +72,30 @@ const AudioPlayer = () => {
       const nextId = getNextStationId(playerVideoId);
       playerRef.current.loadVideoById(nextId);
       setPlayerVideoId(nextId);
+      setBackgroundImage(getNextBkg(backgroundImage)); 
+      setLastFunc('next');
     }
   }
 
   const handlePlayPauseStream = () => {
+
     if (playerIsInitialized && playerRef.current) {
-      switch (playerState) {
-        case 1:
+        if (playerState === 1) {
           playerRef.current.pauseVideo();
-          break;
-        case 2:
+        } else {
           playerRef.current.playVideo();
-          break;
-      }
+        }
     }
-    
   }
+    
 
   const handleRandomStation = () => {
      if (playerIsInitialized && playerRef.current) {
       const randId = getRandomStantionId(playerVideoId);
       playerRef.current.loadVideoById(randId);
       setPlayerVideoId(randId);
+      setBackgroundImage(getRandomBkg());
+      setLastFunc('rand');
     }
   }
 
@@ -96,6 +108,29 @@ const AudioPlayer = () => {
     }
   }
 
+  // Check if YouTube Stream is unavailable and perform last player interaction.
+  useEffect(() => {
+    async function checkCurrentStation() {
+      const vidOk = await checkVideoAvailability(playerVideoId);
+
+      if (!vidOk) {
+        setUnavailabilityText('Vid unavailable, skipping ...')
+        setTimeout(() => {
+          if (lastFunc === 'prev') {
+            handlePreviousStation();
+          } else if (lastFunc === 'rand') {
+            handleRandomStation();
+          } else {
+            handleNextStation();
+          }
+        }, 2000)
+      }
+    }
+    checkCurrentStation();
+    setUnavailabilityText(null);
+  }, [playerVideoId])
+
+
   return (
     <>
       <YouTube
@@ -106,13 +141,13 @@ const AudioPlayer = () => {
       />
 
       <div className=' w-[230px] flex flex-col items-center justify-center gap-7 my-10 text-white'>
-        <span>{getReadableStatus(playerState)}</span>
-        <span>{playerRef.current && videoMetaData.title}</span>
+        <span>{unavailablityText ? unavailablityText : `${getReadableStatus(playerState)}`}</span>
+        <span className='custom-font'>{playerRef.current && videoMetaData.title}</span>
         <ul className='flex flex-row w-full justify-between'>
-            <li><button onClick={handlePreviousStation}><FontAwesomeIcon icon={faBackward}/></button></li>
-            <li><button onClick={handleNextStation}><FontAwesomeIcon icon={faForward}/></button></li>
-            <li><button onClick={handlePlayPauseStream}><FontAwesomeIcon icon={playerState === 1 ? faPause : faPlay}/></button></li>
-            <li><button onClick={handleRandomStation}><FontAwesomeIcon icon={faRandom}/></button></li>
+            <li><InteractionButton onClick={handlePreviousStation} src={"public/icons/prev.svg"}/></li>
+            <li><InteractionButton src={"public/icons/next.svg"} onClick={handleNextStation}/></li>
+            <li><InteractionButton onClick={handlePlayPauseStream} src={playerState === 1 ? "public/icons/pause.svg" : "public/icons/play.svg"}/></li>
+            <li><InteractionButton onClick={handleRandomStation} src={"public/icons/shuffle.svg"}/></li>
         </ul>
         <div className='w-full'><input type="range" onChange={handleVolumeChange} value={playerVolume} style={{width: '100%'}} /></div>
       </div>
@@ -121,4 +156,4 @@ const AudioPlayer = () => {
   )
 }
 
-export default AudioPlayer
+export default Instance
