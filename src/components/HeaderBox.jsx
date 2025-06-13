@@ -31,14 +31,14 @@ const HeaderBox = () => {
       <div>
         <ul className="flex flex-row space-x-10 font-base">
             <li>
-              <InteractionButton onClick={toggleFullscreen} src={fullscreen ? 'public/icons/collapse.svg' : 'public/icons/expand.svg'}/>
+              <InteractionButton onClick={toggleFullscreen} src={fullscreen ? '/icons/collapse.svg' : '/icons/expand.svg'}/>
             </li>
             <li>
               <InteractionButton onClick={() => setBackgroundImage(getRandomBkg())}
-                src={'public/icons/image.svg'}/>
+                src={'/icons/image.svg'}/>
             </li>
             <li>
-              <InteractionButton src={'public/icons/heart.svg'}/>
+              <InteractionButton src={'/icons/heart.svg'}/>
             </li>
         </ul>
       </div>

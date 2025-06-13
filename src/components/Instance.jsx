@@ -144,10 +144,10 @@ const Instance = () => {
         <span>{unavailablityText ? unavailablityText : `${getReadableStatus(playerState)}`}</span>
         <span className='custom-font'>{playerRef.current && videoMetaData.title}</span>
         <ul className='flex flex-row w-full justify-between'>
-            <li><InteractionButton onClick={handlePreviousStation} src={"public/icons/prev.svg"}/></li>
-            <li><InteractionButton src={"public/icons/next.svg"} onClick={handleNextStation}/></li>
-            <li><InteractionButton onClick={handlePlayPauseStream} src={playerState === 1 ? "public/icons/pause.svg" : "public/icons/play.svg"}/></li>
-            <li><InteractionButton onClick={handleRandomStation} src={"public/icons/shuffle.svg"}/></li>
+            <li><InteractionButton onClick={handlePreviousStation} src={"/icons/prev.svg"}/></li>
+            <li><InteractionButton src={"/icons/next.svg"} onClick={handleNextStation}/></li>
+            <li><InteractionButton onClick={handlePlayPauseStream} src={playerState === 1 ? "/icons/pause.svg" : "/icons/play.svg"}/></li>
+            <li><InteractionButton onClick={handleRandomStation} src={"/icons/shuffle.svg"}/></li>
         </ul>
         <div className='w-full'><input type="range" onChange={handleVolumeChange} value={playerVolume} style={{width: '100%'}} /></div>
       </div>
