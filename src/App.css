@@ -15,6 +15,7 @@ html {
     margin: 0;
     padding: 0;
     background-color: rgb(46, 46, 46);
+    font-family: 'Pixelify Sans', sans-serif;
     
 }
 
@@ -23,10 +24,6 @@ html {
     color: white;
     text-align: center;
     text-shadow: 3px 3px 0 purple;
-}
-
-.custom-font {
-    font-family: 'Pixelify Sans', sans-serif;
 }
 
 input[type='range'] {
