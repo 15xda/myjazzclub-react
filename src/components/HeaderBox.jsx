@@ -1,11 +1,4 @@
 import React, { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faUpRightAndDownLeftFromCenter, 
-  faDownLeftAndUpRightToCenter, 
-  faWandMagicSparkles,
-  faCompass
- } from '@fortawesome/free-solid-svg-icons';
 import { useRecoilState } from 'recoil';
 import { backgroundState } from '../recoil/atoms';
 import { getRandomBkg } from '../utils/backgroundControls';
