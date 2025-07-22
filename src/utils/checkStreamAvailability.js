@@ -10,7 +10,6 @@ export default async function checkVideoAvailability(videoId) {
       return false;
     }
   } catch (error) {
-    console.log(error);
     return false;
   }
 }

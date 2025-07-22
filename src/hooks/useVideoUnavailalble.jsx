@@ -1,42 +1,41 @@
 import { useEffect, useState } from "react";
-import checkVideoAvailability from "../utils/checkStreamAvailability";
 import { useRecoilValue } from "recoil";
+
+import checkVideoAvailability from "../utils/checkStreamAvailability";
+import { playerState } from "../recoil/atoms";
 
 export default function useVideoUnavailable({
   lastFunc,
-  handleNextStation,
-  handlePreviousStation,
-  handleRandomStation,
+  handleNext,
+  handlePrevious,
+  handleRandom,
 }) {
-  const [unavailablityText, setUnavailabilityText] = useState();
-  const { playerState } = useRecoilValue(playerState);
+  const [unavailabilityText, setUnavailabilityText] = useState(null);
+  const player = useRecoilValue(playerState);
 
   useEffect(() => {
+    let timeoutId;
     async function checkCurrentStation() {
-      const vidOk = await checkVideoAvailability(playerState.videoId);
+      const vidOk = await checkVideoAvailability(player.videoId);
 
       if (!vidOk) {
         setUnavailabilityText("Vid unavailable, skipping ...");
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           if (lastFunc === "prev") {
-            handlePreviousStation();
+            handlePrevious();
           } else if (lastFunc === "rand") {
-            handleRandomStation();
+            handleRandom();
           } else {
-            handleNextStation();
+            handleNext();
           }
         }, 2000);
       }
     }
     checkCurrentStation();
     setUnavailabilityText(null);
-  }, [
-    handleNextStation,
-    handlePreviousStation,
-    handleRandomStation,
-    lastFunc,
-    playerState.videoId,
-  ]);
 
-  return { unavailablityText };
+    return () => clearTimeout(timeoutId);
+  }, [handleNext, handlePrevious, handleRandom, lastFunc, player.videoId]);
+
+  return [unavailabilityText, setUnavailabilityText];
 }

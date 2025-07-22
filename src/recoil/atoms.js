@@ -11,11 +11,11 @@ const playerState = atom({
   key: "playerState",
   default: {
     videoId: getRandomStantionId(),
-    playerStateCode: null,
+    playerStateCode: -1,
     isInitialized: false,
     volume: 0,
-    playerRef: null,
     videoMetaData: {},
+    playerInstance: null,
   },
 });
 
