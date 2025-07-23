@@ -14,8 +14,13 @@ export default function useVideoUnavailable({
   const player = useRecoilValue(playerState);
 
   useEffect(() => {
+    if (!player.videoId) return;
+
     let timeoutId;
+    setUnavailabilityText(null);
+
     async function checkCurrentStation() {
+      setUnavailabilityText(null);
       const vidOk = await checkVideoAvailability(player.videoId);
 
       if (!vidOk) {
@@ -32,10 +37,9 @@ export default function useVideoUnavailable({
       }
     }
     checkCurrentStation();
-    setUnavailabilityText(null);
 
     return () => clearTimeout(timeoutId);
   }, [handleNext, handlePrevious, handleRandom, lastFunc, player.videoId]);
 
-  return [unavailabilityText, setUnavailabilityText];
+  return { unavailabilityText, setUnavailabilityText };
 }

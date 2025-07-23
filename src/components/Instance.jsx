@@ -2,9 +2,11 @@ import getReadableStatus from "../utils/getReadableStatus";
 import InteractionButton from "./InteractionButton";
 import YTPlayer from "./YTPlayer";
 import usePlayerControls from "../hooks/usePlayerControls";
-import useVideoUnavailable from "../hooks/useVideoUnavailalble";
+import useVideoUnavailable from "../hooks/useVideoUnavailable";
+import useVolume from "../hooks/useVolume";
 import { useRecoilState } from "recoil";
 import { playerState } from "../recoil/atoms";
+import { useState } from "react";
 
 const Instance = () => {
   const {
@@ -14,7 +16,7 @@ const Instance = () => {
     handlePlayPause,
     lastFunc,
   } = usePlayerControls();
-  const [unavailabilityText] = useVideoUnavailable({
+  const { unavailabilityText } = useVideoUnavailable({
     lastFunc,
     handleNext,
     handlePrevious,
@@ -22,10 +24,18 @@ const Instance = () => {
   });
 
   const [player, setPlayer] = useRecoilState(playerState);
+  const [changingVolume, setChangingVolume] = useState(null);
+  const [volume, setVolume] = useVolume({ changingVolume });
+
+  const handleVolumeChange = (e) => {
+    const nV = Number(e.target.value);
+    setChangingVolume(nV);
+    setVolume(nV);
+  };
 
   return (
     <>
-      <YTPlayer volume={50} />
+      <YTPlayer volume={volume} />
 
       <div className=" w-[230px] flex flex-col items-center justify-center gap-7 my-10 text-white  bg-white">
         <div className="flex flex-col w-full h-full gap-5 items-center p-3">
@@ -65,12 +75,12 @@ const Instance = () => {
             </li>
           </ul>
           <div className="w-full">
-            {/* <input
+            <input
               type="range"
               onChange={handleVolumeChange}
-              value={playerVolume}
+              value={volume}
               style={{ width: "100%" }}
-            /> */}
+            />
           </div>
         </div>
       </div>

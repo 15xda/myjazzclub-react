@@ -18,10 +18,6 @@ export default function YTPlayer({ volume }) {
   const [player, setPlayer] = useRecoilState(playerState);
   const playerRef = useRef();
 
-  const onPStateChange = (e) => {
-    setPlayer((prev) => ({ ...prev, playerStateCode: e.data }));
-  };
-
   const onPReady = (e) => {
     playerRef.current = e.target;
     playerRef.current.setVolume(volume);
@@ -34,11 +30,36 @@ export default function YTPlayer({ volume }) {
     }));
   };
 
+  const onPStateChange = (e) => {
+    setPlayer((prev) => ({
+      ...prev,
+      playerStateCode: e.data,
+    }));
+  };
+
   useEffect(() => {
     if (playerRef.current && player.isInitialized) {
       playerRef.current.loadVideoById(player.videoId);
     }
   }, [player.videoId, player.isInitialized]);
+
+  useEffect(() => {
+    if (playerRef.current && player.isInitialized) {
+      playerRef.current.setVolume(volume);
+    }
+  }, [player.isInitialized, volume]);
+
+  useEffect(() => {
+    if (playerRef.current && player.isInitialized) {
+      const stateCode = player.playerStateCode;
+
+      if (stateCode === 1) {
+        playerRef.current.playVideo();
+      } else if (stateCode === 2) {
+        playerRef.current.pauseVideo();
+      }
+    }
+  }, [player.isInitialized, player.playerStateCode]);
 
   return (
     <YouTube

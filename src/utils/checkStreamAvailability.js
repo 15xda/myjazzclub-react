@@ -4,12 +4,13 @@ export default async function checkVideoAvailability(videoId) {
   try {
     const response = await fetch(url);
 
-    if (response.ok) {
-      return true;
-    } else {
+    if (!response.ok) {
       return false;
+    } else {
+      return true;
     }
   } catch (error) {
+    console.log(error);
     return false;
   }
 }

@@ -42,16 +42,14 @@ export default function usePlayerControls() {
   };
 
   const handlePlayPause = () => {
-    if (!player.playerInstance) return;
+    if (!player.isInitialized) return;
 
     if (player.playerStateCode === 1) {
-      player.playerInstance.pauseVideo();
+      setPlayer((prev) => ({ ...prev, playerStateCode: 2 }));
     } else {
-      player.playerInstance.playVideo();
+      setPlayer((prev) => ({ ...prev, playerStateCode: 1 }));
     }
   };
-
-  console.log(player.videoId);
 
   return {
     handleNext,
