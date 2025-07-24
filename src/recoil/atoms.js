@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 import { getRandomBkg } from "../utils/backgroundControls";
-import { getRandomStantionId } from "../utils/playerControlHelpers";
+import { getRandomStationId } from "../utils/playerControlHelpers";
 
 const backgroundState = atom({
   key: "background",
@@ -10,8 +10,8 @@ const backgroundState = atom({
 const playerState = atom({
   key: "playerState",
   default: {
-    videoId: getRandomStantionId(),
-    playerStateCode: -1,
+    videoId: getRandomStationId(),
+    isPlaying: true,
     isInitialized: false,
     volume: 0,
     videoMetaData: {},
@@ -19,4 +19,9 @@ const playerState = atom({
   },
 });
 
-export { playerState, backgroundState };
+const isPlayingState = atom({
+  key: "isPlaying",
+  default: false,
+});
+
+export { playerState, backgroundState, isPlayingState };

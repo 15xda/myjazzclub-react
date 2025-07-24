@@ -1,31 +1,21 @@
-import getReadableStatus from "../utils/getReadableStatus";
 import InteractionButton from "./InteractionButton";
 import YTPlayer from "./YTPlayer";
 import usePlayerControls from "../hooks/usePlayerControls";
-import useVideoUnavailable from "../hooks/useVideoUnavailable";
 import useVolume from "../hooks/useVolume";
 import { useRecoilState } from "recoil";
 import { playerState } from "../recoil/atoms";
 import { useState } from "react";
+import useVideoData from "../hooks/useVideoData";
 
 const Instance = () => {
-  const {
-    handleNext,
-    handlePrevious,
-    handleRandom,
-    handlePlayPause,
-    lastFunc,
-  } = usePlayerControls();
-  const { unavailabilityText } = useVideoUnavailable({
-    lastFunc,
-    handleNext,
-    handlePrevious,
-    handleRandom,
-  });
+  const { handleNext, handlePrevious, handleRandom } = usePlayerControls();
 
-  const [player, setPlayer] = useRecoilState(playerState);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [changingVolume, setChangingVolume] = useState(null);
   const [volume, setVolume] = useVolume({ changingVolume });
+  const [error, setError] = useState();
+  const [status, setStatus] = useState();
+  const { videoData } = useVideoData();
 
   const handleVolumeChange = (e) => {
     const nV = Number(e.target.value);
@@ -33,19 +23,24 @@ const Instance = () => {
     setVolume(nV);
   };
 
+  console.log(videoData);
+
   return (
     <>
-      <YTPlayer volume={volume} />
+      <YTPlayer
+        volume={volume}
+        setError={setError}
+        setStatus={setStatus}
+        isPlaying={isPlaying}
+      />
 
       <div className=" w-[230px] flex flex-col items-center justify-center gap-7 my-10 text-white  bg-white">
         <div className="flex flex-col w-full h-full gap-5 items-center p-3">
           <span className="bg-black p-3 w-full text-center">
-            {unavailabilityText
-              ? unavailabilityText
-              : `${getReadableStatus(player.playerStateCode)}`}
+            {error ? error : status}
           </span>
           <span className="custom-font text-black">
-            {player.videoMetaData.title || "No title"}
+            {videoData.title || "No title"}
           </span>
           <ul className="flex flex-row w-full justify-between">
             <li>
@@ -59,12 +54,8 @@ const Instance = () => {
             </li>
             <li>
               <InteractionButton
-                onClick={handlePlayPause}
-                src={
-                  player.playerStateCode === 1
-                    ? "/icons/pause.svg"
-                    : "/icons/play.svg"
-                }
+                onClick={() => setIsPlaying(!isPlaying)}
+                src={isPlaying ? "/icons/pause.svg" : "/icons/play.svg"}
               />
             </li>
             <li>

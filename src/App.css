@@ -1,33 +1,27 @@
 @import "tailwindcss";
 
 @font-face {
-    font-family: 'Pixelify Sans';
-    src: url('/fonts/PixelifySans-Regular.ttf') format('truetype');
+  font-family: "WindowsXPTahoma";
+  src: url("/fonts/windows-xp-tahoma.woff2") format("woff2"),
+    url("/fonts/windows-xp-tahoma.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
-
-@font-face {
-    font-family: 'Laconica';
-    src: url('https://fonts.cdnfonts.com/css/laconica') format('truetype');
-}
-
 
 html {
-    margin: 0;
-    padding: 0;
-    background-color: rgb(46, 46, 46);
-    font-family: 'Pixelify Sans', sans-serif;
-    
+  margin: 0;
+  padding: 0;
+  background-color: rgb(46, 46, 46);
+  font-family: "WindowsXPTahoma", sans-serif;
+  font-style: bold;
 }
 
 .logo-text {
-    font-family: 'Pixelify Sans', sans-serif;
-    color: white;
-    text-align: center;
-    text-shadow: 3px 3px 0 purple;
+  font-size: 40px;
 }
 
-input[type='range'] {
-  -webkit-appearance: none; 
+input[type="range"] {
+  -webkit-appearance: none;
   width: 100%;
   height: 15px;
   background-color: white;
@@ -43,7 +37,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 20px;
   background-color: white;
   z-index: 10;
-  background-image: url('https://unpkg.com/pixelarticons@1.8.0/svg/volume-2.svg');
+  background-image: url("https://unpkg.com/pixelarticons@1.8.0/svg/volume-2.svg");
   border: 1px solid black;
   color: white;
   cursor: grab;
@@ -52,6 +46,5 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .interaction-button-shadows {
-    box-shadow: 3px 3px 0 purple;
+  box-shadow: 3px 3px 0 purple;
 }
-

@@ -1,72 +1,46 @@
 import YouTube from "react-youtube";
+import ReactPlayer from "react-player";
 import { useRecoilState } from "recoil";
 
-import { playerState } from "../recoil/atoms";
-import { useRef, useEffect } from "react";
+import { isPlayingState, playerState } from "../recoil/atoms";
+import { useRef } from "react";
+import usePlayerControls from "../hooks/usePlayerControls";
 
-const playerOptions = {
-  height: "0",
-  width: "0",
-  playerVars: {
-    autoplay: 1,
-    controls: 0,
-    playsinline: 1,
-  },
-};
-
-export default function YTPlayer({ volume }) {
+export default function YTPlayer({
+  volume,
+  error,
+  setError,
+  setStatus,
+  isPlaying,
+}) {
   const [player, setPlayer] = useRecoilState(playerState);
   const playerRef = useRef();
+  const { handleRandom } = usePlayerControls();
+  console.log(player.videoId);
 
-  const onPReady = (e) => {
-    playerRef.current = e.target;
-    playerRef.current.setVolume(volume);
-
-    setPlayer((prev) => ({
-      ...prev,
-      isInitialized: true,
-      volume,
-      videoMetaData: playerRef.current.getVideoData(),
-    }));
+  const handleError = () => {
+    setError("Unavailable, skipping...");
+    setTimeout(() => {
+      handleRandom();
+      setError(null);
+    }, 2000);
   };
-
-  const onPStateChange = (e) => {
-    setPlayer((prev) => ({
-      ...prev,
-      playerStateCode: e.data,
-    }));
-  };
-
-  useEffect(() => {
-    if (playerRef.current && player.isInitialized) {
-      playerRef.current.loadVideoById(player.videoId);
-    }
-  }, [player.videoId, player.isInitialized]);
-
-  useEffect(() => {
-    if (playerRef.current && player.isInitialized) {
-      playerRef.current.setVolume(volume);
-    }
-  }, [player.isInitialized, volume]);
-
-  useEffect(() => {
-    if (playerRef.current && player.isInitialized) {
-      const stateCode = player.playerStateCode;
-
-      if (stateCode === 1) {
-        playerRef.current.playVideo();
-      } else if (stateCode === 2) {
-        playerRef.current.pauseVideo();
-      }
-    }
-  }, [player.isInitialized, player.playerStateCode]);
 
   return (
-    <YouTube
-      onReady={onPReady}
-      onStateChange={onPStateChange}
-      opts={playerOptions}
-      videoId={player.videoId}
+    <ReactPlayer
+      src={`https://www.youtube.com/watch?v=${player.videoId}`}
+      ref={playerRef}
+      playing={isPlaying}
+      paused={!isPlaying}
+      volume={volume / 100}
+      onError={handleError}
+      onPlay={() => setStatus("playing")}
+      onPause={() => setStatus("paused")}
+      onBuffer={() => setStatus("buffering")}
+      onEnded={() => setStatus("ended")}
+      width="0"
+      height="0"
+      style={{ display: "none" }}
     />
   );
 }

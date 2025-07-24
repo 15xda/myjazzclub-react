@@ -3,7 +3,7 @@ import { playerState } from "../recoil/atoms";
 import {
   getNextStationId,
   getPreviousStationId,
-  getRandomStantionId,
+  getRandomStationId,
 } from "../utils/playerControlHelpers";
 import { useState } from "react";
 
@@ -23,6 +23,7 @@ export default function usePlayerControls() {
 
   const handleNext = () => {
     const nextId = getNextStationId(player.videoId);
+    console.log("Handle Next called");
 
     setLastFunc("next");
     setPlayer((prev) => ({
@@ -32,7 +33,7 @@ export default function usePlayerControls() {
   };
 
   const handleRandom = async () => {
-    const randomId = getRandomStantionId();
+    const randomId = getRandomStationId();
 
     setLastFunc("rand");
     setPlayer((prev) => ({
@@ -41,21 +42,10 @@ export default function usePlayerControls() {
     }));
   };
 
-  const handlePlayPause = () => {
-    if (!player.isInitialized) return;
-
-    if (player.playerStateCode === 1) {
-      setPlayer((prev) => ({ ...prev, playerStateCode: 2 }));
-    } else {
-      setPlayer((prev) => ({ ...prev, playerStateCode: 1 }));
-    }
-  };
-
   return {
     handleNext,
     handlePrevious,
     handleRandom,
-    handlePlayPause,
     lastFunc,
   };
 }
