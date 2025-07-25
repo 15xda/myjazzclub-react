@@ -1,23 +1,22 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "WindowsXPTahoma";
-  src: url("/fonts/windows-xp-tahoma.woff2") format("woff2"),
-    url("/fonts/windows-xp-tahoma.woff") format("woff");
-  font-weight: normal;
+  font-family: "Longsile";
   font-style: normal;
+  font-weight: 400;
+  src: local("Longsile"), url("/fonts/Longsile.woff") format("woff");
 }
 
 html {
   margin: 0;
   padding: 0;
   background-color: rgb(46, 46, 46);
-  font-family: "WindowsXPTahoma", sans-serif;
-  font-style: bold;
+  font-family: "Longsile", sans-serif;
 }
 
 .logo-text {
   font-size: 40px;
+  text-shadow: 0px 0px 10px purple;
 }
 
 input[type="range"] {

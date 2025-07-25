@@ -2,30 +2,28 @@ import InteractionButton from "./InteractionButton";
 import YTPlayer from "./YTPlayer";
 import usePlayerControls from "../hooks/usePlayerControls";
 import useVolume from "../hooks/useVolume";
-import { useRecoilState } from "recoil";
-import { playerState } from "../recoil/atoms";
 import { useState } from "react";
 import useVideoData from "../hooks/useVideoData";
+import PressToStart from "./PressToStart";
 
 const Instance = () => {
-  const { handleNext, handlePrevious, handleRandom } = usePlayerControls();
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [changingVolume, setChangingVolume] = useState(null);
-  const [volume, setVolume] = useVolume({ changingVolume });
   const [error, setError] = useState();
   const [status, setStatus] = useState();
+  const [interacted, setInteracted] = useState(false);
+
+  const { handleNext, handlePrevious, handleRandom } = usePlayerControls();
+  const [volume, setVolume] = useVolume({ changingVolume });
   const { videoData } = useVideoData();
 
   const handleVolumeChange = (e) => {
-    const nV = Number(e.target.value);
-    setChangingVolume(nV);
-    setVolume(nV);
+    const nVolume = Number(e.target.value);
+    setChangingVolume(nVolume);
+    setVolume(nVolume);
   };
 
-  console.log(videoData);
-
-  return (
+  return interacted ? (
     <>
       <YTPlayer
         volume={volume}
@@ -76,6 +74,8 @@ const Instance = () => {
         </div>
       </div>
     </>
+  ) : (
+    <PressToStart setInteracted={setInteracted} />
   );
 };
 
